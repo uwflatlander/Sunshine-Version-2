@@ -58,12 +58,22 @@ public class ForecastFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == R.id.action_refresh)
         {
-            FetchForecastTask fetchForecastTask = new FetchForecastTask();
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-            fetchForecastTask.execute(preferences.getString(getString(R.string.pref_location_key), getString(R.string.pref_location_default)));
+            updateWeather();
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        updateWeather();
+    }
+
+    private void updateWeather() {
+        FetchForecastTask fetchForecastTask = new FetchForecastTask();
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        fetchForecastTask.execute(preferences.getString(getString(R.string.pref_location_key), getString(R.string.pref_location_default)));
     }
 
     @Override
@@ -71,19 +81,7 @@ public class ForecastFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-        ArrayList<String> forecasts = new ArrayList<String>();
-        forecasts.add("Today - Cloudy - 74 / 54");
-        forecasts.add("Tomorrow - Showers - 77 / 64");
-        forecasts.add("Sunday - Showers - 78 / 65");
-        forecasts.add("Monday - Mostly Cloudy - 81 / 62");
-        forecasts.add("Tuesday - Partly Cloudy - 78 / 57");
-        forecasts.add("Wednesday - Showers - 76 / 63");
-        forecasts.add("Thursday - Partly Cloudy - 81 / 61");
-        forecasts.add("Friday - Thunderstorms - 802 / 63");
-        forecasts.add("Saturday - Showers - 80 / 63");
-        forecasts.add("Sunday - Cloudy - 80 / 62");
-
-        mForecastAdapter = new ArrayAdapter<String>(getActivity(), R.layout.list_item_forecast, R.id.txListItemForecast, forecasts);
+        mForecastAdapter = new ArrayAdapter<String>(getActivity(), R.layout.list_item_forecast, R.id.txListItemForecast, new ArrayList<String>());
 
         ListView listView = (ListView) rootView.findViewById(R.id.listview_forecast);
         listView.setAdapter(mForecastAdapter);
