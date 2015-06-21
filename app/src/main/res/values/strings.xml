@@ -6,5 +6,6 @@
     <string name="action_settings">Settings</string>
     <string name="refresh_title">Refresh</string>
     <string name="title_activity_forecast_detail">Detail</string>
+    <string name="activity_title_settings">Settings</string>
 
 </resources>
