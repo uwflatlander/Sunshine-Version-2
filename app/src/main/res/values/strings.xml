@@ -11,4 +11,13 @@
     <string name="pref_location_key" translatable="false">location</string>
     <string name="pref_location_default" translatable="false">53704</string>
 
+    <string name="pref_unit_key" translatable="false">units</string>
+    <string name="pref_unit_label">Temperature Units</string>
+    <string name="pref_unit_default">@string/pref_unit_metric_key</string>
+    <string name="pref_unit_metric_key" translatable="false">metric</string>
+    <string name="pref_unit_imperial_key" translatable="false">imperial</string>
+    <string name="pref_unit_imperial_label">Imperial</string>
+    <string name="pref_unit_metric_label">Metric</string>
+
+
 </resources>

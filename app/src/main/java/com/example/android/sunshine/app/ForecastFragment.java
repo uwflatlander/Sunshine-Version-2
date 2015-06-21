@@ -217,13 +217,26 @@ public class ForecastFragment extends Fragment {
         /**
          * Prepare the weather high/lows for presentation.
          */
-        private String formatHighLows(double high, double low) {
+        private String formatHighLows(double high, double low, String units) {
             // For presentation, assume the user doesn't care about tenths of a degree.
+            if(units.equals(getString(R.string.pref_unit_imperial_key)))
+            {
+                high = convertToFahrenheit(high);
+                low = convertToFahrenheit(low);
+            } else if (!units.equals(getString(R.string.pref_unit_metric_key)))
+            {
+                Log.d(LOG_TAG,"Unsupported unit type: " + units);
+            }
             long roundedHigh = Math.round(high);
             long roundedLow = Math.round(low);
 
             String highLowStr = roundedHigh + "/" + roundedLow;
             return highLowStr;
+        }
+
+        private double convertToFahrenheit(double temp)
+        {
+            return temp * 1.8 + 32;
         }
 
         /**
@@ -243,6 +256,9 @@ public class ForecastFragment extends Fragment {
             final String OWM_MAX = "max";
             final String OWM_MIN = "min";
             final String OWM_DESCRIPTION = "main";
+
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            String unit = preferences.getString(getString(R.string.pref_unit_key), getString(R.string.pref_unit_default));
 
             JSONObject forecastJson = new JSONObject(forecastJsonStr);
             JSONArray weatherArray = forecastJson.getJSONArray(OWM_LIST);
@@ -292,7 +308,7 @@ public class ForecastFragment extends Fragment {
                 double high = temperatureObject.getDouble(OWM_MAX);
                 double low = temperatureObject.getDouble(OWM_MIN);
 
-                highAndLow = formatHighLows(high, low);
+                highAndLow = formatHighLows(high, low, unit);
                 resultStrs[i] = day + " - " + description + " - " + highAndLow;
             }
 
