@@ -18,6 +18,7 @@
     <string name="pref_unit_imperial_key" translatable="false">imperial</string>
     <string name="pref_unit_imperial_label">Imperial</string>
     <string name="pref_unit_metric_label">Metric</string>
+    <string name="action_share_title">Share</string>
 
 
 </resources>
