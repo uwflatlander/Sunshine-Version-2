@@ -311,6 +311,7 @@ public class WeatherProvider extends ContentProvider {
 
         switch (match) {
             case WEATHER:
+                normalizeDate(values);
                 updates = db.update(WeatherContract.WeatherEntry.TABLE_NAME, values, selection, selectionArgs);
                 break;
             case LOCATION:
@@ -322,7 +323,8 @@ public class WeatherProvider extends ContentProvider {
         }
         // Student: This is a lot like the delete function.  We return the number of rows impacted
         // by the update.
-        getContext().getContentResolver().notifyChange(uri, null);
+        if(updates != 0)
+            getContext().getContentResolver().notifyChange(uri, null);
         return updates;
     }
 
