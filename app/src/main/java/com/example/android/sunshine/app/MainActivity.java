@@ -29,13 +29,18 @@ public class MainActivity extends ActionBarActivity {
 
     private final String LOG_TAG = MainActivity.class.getSimpleName();
 
+    private static final String FORECASTFRAGMENT_TAG = ForecastFragment.class.getSimpleName();
+
+    private String mLocation;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mLocation = Utility.getPreferredLocation(this);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new ForecastFragment())
+                    .add(R.id.container, new ForecastFragment(), FORECASTFRAGMENT_TAG)
                     .commit();
         }
     }
@@ -65,6 +70,19 @@ public class MainActivity extends ActionBarActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onResume() {
+        String curLocation = Utility.getPreferredLocation(this);
+        if(!curLocation.equals(mLocation))
+        {
+            mLocation = curLocation;
+            ForecastFragment ff = (ForecastFragment) getSupportFragmentManager().findFragmentByTag(FORECASTFRAGMENT_TAG);
+            ff.onLocationChanged();
+            Log.v(LOG_TAG, "New Location: " + mLocation);
+        }
+        super.onResume();
     }
 
     private void openPreferredLocationInMap() {
