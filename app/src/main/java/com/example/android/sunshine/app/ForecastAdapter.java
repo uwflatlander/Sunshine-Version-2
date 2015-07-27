@@ -42,14 +42,39 @@ public class ForecastAdapter extends CursorAdapter {
                 " - " + highAndLow;
     }
 
-    /*
-        Remember that these views are reused as needed.
+
+    private static final int VIEW_TYPE_TODAY = 0;
+    private static final int VIEW_TYPE_FUTURE_DAY = 1;
+    private static final int VIEW_TYPE_COUNT = 2;
+
+    @Override
+    public int getItemViewType(int position) {
+        return position == 0 ? VIEW_TYPE_TODAY : VIEW_TYPE_FUTURE_DAY;
+    }
+
+    @Override
+    public int getViewTypeCount() {
+        return VIEW_TYPE_COUNT;
+    }
+
+    /**
+     * Copy/paste note: Replace existing newView() method in ForecastAdapter with this one.
      */
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
-        View view = LayoutInflater.from(context).inflate(R.layout.list_item_forecast, parent, false);
-
-        return view;
+        // Choose the layout type
+        int viewType = getItemViewType(cursor.getPosition());
+        int layoutId = -1;
+        // DONE: Determine layoutId from viewType
+        if(viewType == VIEW_TYPE_TODAY)
+        {
+            layoutId = R.layout.list_item_forecast_today;
+        }
+        else if (viewType == VIEW_TYPE_FUTURE_DAY)
+        {
+            layoutId = R.layout.list_item_forecast;
+        }
+        return LayoutInflater.from(context).inflate(layoutId, parent, false);
     }
 
     /*
@@ -66,12 +91,12 @@ public class ForecastAdapter extends CursorAdapter {
         ImageView iconView = (ImageView) view.findViewById(R.id.list_item_icon);
         iconView.setImageResource(R.drawable.ic_launcher);
 
-        // TODO Read date from cursor
+        // DONE Read date from cursor
         Long dateRaw = cursor.getLong(ForecastFragment.COL_WEATHER_DATE);
         TextView tvDate = (TextView) view.findViewById(R.id.list_item_date_textview);
         tvDate.setText(Utility.getFriendlyDayString(context, dateRaw));
 
-        // TODO Read weather forecast from cursor
+        // DONE Read weather forecast from cursor
         String forecast = cursor.getString(ForecastFragment.COL_WEATHER_DESC);
         TextView tvForecast = (TextView) view.findViewById(R.id.list_item_forecast_textview);
         tvForecast.setText(forecast);
@@ -84,7 +109,7 @@ public class ForecastAdapter extends CursorAdapter {
         TextView highView = (TextView) view.findViewById(R.id.list_item_high_textview);
         highView.setText(Utility.formatTemperature(high, isMetric));
 
-        // TODO Read low temperature from cursor
+        // DONE Read low temperature from cursor
         double low = cursor.getDouble(ForecastFragment.COL_WEATHER_MIN_TEMP);
         TextView tvLow = (TextView) view.findViewById(R.id.list_item_low_textview);
         tvLow.setText(Utility.formatTemperature(low, isMetric));
