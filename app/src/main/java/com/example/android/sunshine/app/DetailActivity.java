@@ -17,10 +17,7 @@
 package com.example.android.sunshine.app;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,10 +29,8 @@ public class DetailActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
         if (savedInstanceState == null) {
-            DetailFragment detailFragment = new DetailFragment();
-            detailFragment.setArguments(getIntent().getExtras());
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, detailFragment)
+                    .add(R.id.container, new DetailFragment())
                     .commit();
         }
     }
@@ -57,23 +52,8 @@ public class DetailActivity extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            Intent settings = new Intent(this,SettingsActivity.class);
-            startActivity(settings);
+            startActivity(new Intent(this, SettingsActivity.class));
             return true;
-        }
-
-        if(id == R.id.action_show_location)
-        {
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-            String location = preferences.getString(getString(R.string.pref_location_key), getString(R.string.pref_location_default));
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            Uri.Builder builder = Uri.parse("geo:0,0").buildUpon();
-            builder.appendQueryParameter("q", location);
-            intent.setData(builder.build());
-            if(intent.resolveActivity(getPackageManager()) != null)
-            {
-                startActivity(intent);
-            }
         }
 
         return super.onOptionsItemSelected(item);
