@@ -23,6 +23,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -38,6 +39,7 @@ import com.example.android.sunshine.app.data.WeatherContract;
  * Encapsulates fetching the forecast and displaying it as a {@link ListView} layout.
  */
 public class ForecastFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+    private static final String LOG_TAG = ForecastFragment.class.getSimpleName();
 
     private ForecastAdapter mForecastAdapter;
 
@@ -109,13 +111,14 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
+        Log.v(LOG_TAG, "In onActivityCreated");
         getLoaderManager().initLoader(WEATHER_LOADER, null, this);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.v(LOG_TAG, "In onCreateView");
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
@@ -146,6 +149,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     private void updateWeather() {
+        Log.v(LOG_TAG, "In updateWeather");
         FetchWeatherTask weatherTask = new FetchWeatherTask(getActivity());
         String location = Utility.getPreferredLocation(getActivity());
         weatherTask.execute(location);
@@ -153,9 +157,12 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+
         if(id == WEATHER_LOADER)
         {
+
             String locationSetting = Utility.getPreferredLocation(getActivity());
+            Log.v(LOG_TAG, "In onCreateLoader: " + locationSetting);
             String sortOrder = WeatherContract.WeatherEntry.COLUMN_DATE + " ASC";
             Uri weatherForLocationUri = WeatherContract.WeatherEntry.buildWeatherLocationWithStartDate(
                     locationSetting,
@@ -176,11 +183,13 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 
     @Override
     public void onLoadFinished(Loader loader, Cursor data) {
+        Log.v(LOG_TAG, "In onLoadFinished" + data.getCount());
         mForecastAdapter.swapCursor(data);
     }
 
     @Override
     public void onLoaderReset(Loader loader) {
+        Log.v(LOG_TAG, "In onLoaderReset");
         mForecastAdapter.swapCursor(null);
     }
 }
