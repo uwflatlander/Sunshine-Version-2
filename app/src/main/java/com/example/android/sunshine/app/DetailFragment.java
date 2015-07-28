@@ -41,6 +41,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
             , WeatherContract.WeatherEntry.COLUMN_WIND_SPEED
             , WeatherContract.WeatherEntry.COLUMN_DEGREES
             , WeatherContract.WeatherEntry.COLUMN_PRESSURE
+            , WeatherContract.WeatherEntry.COLUMN_WEATHER_ID
 
     };
 
@@ -53,6 +54,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     private static final int COL_WEATHER_WIND_SPEED = 6;
     private static final int COL_WEATHER_DEGREES = 7;
     private static final int COL_WEATHER_PRESSURE = 8;
+    private static final int COL_WEATHER_CONDITION_ID = 9;
 
     private static final String FORECAST_SHARE_HASHTAG = " #SunshineApp";
 
@@ -112,6 +114,8 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
         float pressure = data.getFloat(COL_WEATHER_PRESSURE);
         mPressureView.setText(getActivity().getString(R.string.format_pressure, pressure));
+
+        mIconView.setImageResource(Utility.getArtResourceForWeatherCondition(data.getInt(COL_WEATHER_CONDITION_ID)));
 
         mForecastStr = String.format("%s - %s - %s/%s", formattedDate, desc, maxTemp, minTemp);
 

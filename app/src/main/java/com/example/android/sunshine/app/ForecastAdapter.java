@@ -67,8 +67,6 @@ public class ForecastAdapter extends CursorAdapter {
 
         // Read weather icon ID from cursor
         int weatherId = cursor.getInt(ForecastFragment.COL_WEATHER_ID);
-        // Use placeholder image for now
-        viewHolder.iconView.setImageResource(R.drawable.ic_launcher);
 
         // DONE Read date from cursor
         Long dateRaw = cursor.getLong(ForecastFragment.COL_WEATHER_DATE);
@@ -88,6 +86,17 @@ public class ForecastAdapter extends CursorAdapter {
         // DONE Read low temperature from cursor
         double low = cursor.getDouble(ForecastFragment.COL_WEATHER_MIN_TEMP);
         viewHolder.lowTempView.setText(Utility.formatTemperature(context, low, isMetric));
+
+        int weatherCondId = cursor.getInt(ForecastFragment.COL_WEATHER_CONDITION_ID);
+        if(getItemViewType(cursor.getPosition()) == VIEW_TYPE_TODAY)
+        {
+            viewHolder.iconView.setImageResource(Utility.getArtResourceForWeatherCondition(weatherCondId));
+        } else
+        {
+            viewHolder.iconView.setImageResource(Utility.getIconResourceForWeatherCondition(weatherCondId));
+        }
+
+
 
     }
 
