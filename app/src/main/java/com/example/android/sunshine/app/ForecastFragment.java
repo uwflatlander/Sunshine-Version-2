@@ -180,7 +180,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     private void updateWeather() {
         Log.v(LOG_TAG, "In updateWeather");
         Intent intent = new Intent(getActivity(), SunshineService.class);
-        intent.putExtra(Intent.EXTRA_TEXT, Utility.getPreferredLocation(getActivity()));
+        intent.putExtra(SunshineService.LOCATION_EXTRA, Utility.getPreferredLocation(getActivity()));
         getActivity().startService(intent);
     }
 

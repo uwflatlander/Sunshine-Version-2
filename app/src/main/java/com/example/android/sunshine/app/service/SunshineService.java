@@ -29,6 +29,7 @@ import java.util.Vector;
 public class SunshineService extends IntentService {
     private final String LOG_TAG = SunshineService.class.getSimpleName();
     private final static String SERVICE_NAME = "SunshineService";
+    public final static String LOCATION_EXTRA = "LOCATION_QUERY";
 
     private boolean DEBUG = true;
 
@@ -38,7 +39,7 @@ public class SunshineService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        String locationQuery = intent.getStringExtra(Intent.EXTRA_TEXT);
+        String locationQuery = intent.getStringExtra(LOCATION_EXTRA);
 
         // These two need to be declared outside the try/catch
         // so that they can be closed in the finally block.
