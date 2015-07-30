@@ -43,6 +43,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     private ForecastAdapter mForecastAdapter;
     private int mSelectedIndex = ListView.INVALID_POSITION;
     private ListView mListview;
+    private boolean mUseTodayLayout;
 
     private static final String[] FORECAST_COLUMNS = {
             // In this case the id needs to be fully qualified with a table name, since
@@ -83,6 +84,16 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     public void onLocationChanged(){
         updateWeather();
         getLoaderManager().restartLoader(WEATHER_LOADER, null, this);
+    }
+
+    public void setUseTodayLayout(boolean useTodayLayout)
+    {
+        mUseTodayLayout = useTodayLayout;
+        if(mForecastAdapter != null)
+        {
+            mForecastAdapter.setUseTodayLayout(useTodayLayout);
+        }
+
     }
 
     @Override
@@ -158,6 +169,8 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
                 }
             }
         });
+
+        mForecastAdapter.setUseTodayLayout(mUseTodayLayout);
 
         return rootView;
     }
