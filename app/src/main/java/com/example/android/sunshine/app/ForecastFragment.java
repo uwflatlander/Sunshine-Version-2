@@ -41,6 +41,8 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     private static final String LOG_TAG = ForecastFragment.class.getSimpleName();
 
     private ForecastAdapter mForecastAdapter;
+    private int mSelectedIndex = ListView.INVALID_POSITION;
+    private ListView mListview;
 
     private static final String[] FORECAST_COLUMNS = {
             // In this case the id needs to be fully qualified with a table name, since
@@ -72,6 +74,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     static final int COL_COORD_LAT = 7;
     static final int COL_COORD_LONG = 8;
 
+    private static final String SELECTED_POS = "SELECTED";
     private static final int WEATHER_LOADER = 1;
 
     public ForecastFragment() {
@@ -115,6 +118,12 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putInt(SELECTED_POS, mSelectedIndex);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.v(LOG_TAG, "In onCreateView");
@@ -123,10 +132,16 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 
         mForecastAdapter = new ForecastAdapter(getActivity(), null, 0);
 
+        mListview = (ListView) rootView.findViewById(R.id.listview_forecast);
+        if(savedInstanceState != null && savedInstanceState.containsKey(SELECTED_POS))
+        {
+            mSelectedIndex = savedInstanceState.getInt(SELECTED_POS);
+        }
+
         // Get a reference to the ListView, and attach this adapter to it.
-        ListView listView = (ListView) rootView.findViewById(R.id.listview_forecast);
-        listView.setAdapter(mForecastAdapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+        mListview.setAdapter(mForecastAdapter);
+        mListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView adapterView, View view, int position, long l) {
@@ -134,6 +149,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
                 // if it cannot seek to that position.
                 Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
                 if (cursor != null) {
+                    mSelectedIndex = position;
                     String location = Utility.getPreferredLocation(getActivity());
                     long itemDate = cursor.getLong(COL_WEATHER_DATE);
                     Uri itemUri = WeatherContract.WeatherEntry.buildWeatherLocationWithDate(location, itemDate);
@@ -181,8 +197,12 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 
     @Override
     public void onLoadFinished(Loader loader, Cursor data) {
-        Log.v(LOG_TAG, "In onLoadFinished" + data.getCount());
+        Log.v(LOG_TAG, "In onLoadFinished.");
         mForecastAdapter.swapCursor(data);
+        if(mSelectedIndex != ListView.INVALID_POSITION)
+        {
+            mListview.smoothScrollToPosition(mSelectedIndex);
+        }
     }
 
     @Override
