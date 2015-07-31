@@ -48,6 +48,18 @@
     <!-- Value in SharedPreferences for imperial temperature unit option [CHAR LIMIT=NONE] -->
     <string name="pref_units_imperial" translatable="false">imperial</string>
 
+    <!-- Label for the notification on/odd preference [CHAR LIMIT=30] -->
+    <string name="pref_notification_label">Show notification?</string>
+
+    <string name="pref_notification_on_summary">Look up for the current conditions</string>
+
+    <string name="pref_notification_off_summary">Notifications currently on holiday</string>
+
+    <!-- Key name for storing notification on/off in SharedPreferences [CHAR LIMIT=NONE] -->
+    <string name="pref_notification_key" translatable="false">notification</string>
+
+    <string name="pref_notification_default" translatable="false">true</string>
+
     <!-- Date label when displaying today's weather forecast [CHAR LIMIT=20] -->
     <string name="today">Today</string>
 

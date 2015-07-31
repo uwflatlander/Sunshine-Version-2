@@ -5,6 +5,9 @@ import android.accounts.AccountManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.content.AbstractThreadedSyncAdapter;
@@ -45,7 +48,7 @@ import java.net.URL;
 import java.util.Vector;
 
 public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
-    public final String LOG_TAG = SunshineSyncAdapter.class.getSimpleName();
+    public static final String LOG_TAG = SunshineSyncAdapter.class.getSimpleName();
 
     // Interval at which to sync with the weather, in seconds.
     // 60 seconds (1 minute) * 180 = 3 hours
@@ -184,6 +187,7 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
      * @param context The context used to access the account service
      */
     public static void syncImmediately(Context context) {
+        Log.v(LOG_TAG, "Immediate sync initiated");
         Bundle bundle = new Bundle();
         bundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
         bundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
@@ -231,6 +235,15 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
     }
 
     private void notifyWeather() {
+
+        if(!Utility.showNotification(getContext()))
+        {
+            Log.v(LOG_TAG, "Disabling notifications");
+            NotificationManager notificationManager = (NotificationManager) getContext().getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManager.cancel(WEATHER_NOTIFICATION_ID);
+            return;
+        }
+
         Context context = getContext();
         //checking the last update and notify if it' the first of the day
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -253,6 +266,9 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
                 String desc = cursor.getString(INDEX_SHORT_DESC);
 
                 int iconId = Utility.getIconResourceForWeatherCondition(weatherId);
+                Resources resources = context.getResources();
+                Bitmap largeIcon = BitmapFactory.decodeResource(resources,
+                        Utility.getArtResourceForWeatherCondition(weatherId));
                 String title = context.getString(R.string.app_name);
 
                 // Define the text of the forecast.
@@ -263,7 +279,9 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
 
                 //build your notification here.
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext())
+                        .setColor(resources.getColor(R.color.sunshine_light_blue))
                         .setSmallIcon(iconId)
+                        .setLargeIcon(largeIcon)
                         .setContentTitle(title)
                         .setContentText(contentText);
 
@@ -283,6 +301,7 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
                 editor.putLong(lastNotificationKey, System.currentTimeMillis());
                 editor.commit();
             }
+            cursor.close();
         }
 
     }

@@ -38,6 +38,12 @@ public class Utility {
                 .equals(context.getString(R.string.pref_units_metric));
     }
 
+    public static boolean showNotification(Context context)
+    {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return prefs.getBoolean(context.getString(R.string.pref_notification_key), true);
+    }
+
     public static String formatTemperature(Context context, double temperature) {
         // Data stored in Celsius by default.  If user prefers to see in Fahrenheit, convert
         // the values here.
